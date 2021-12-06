@@ -1,4 +1,5 @@
 import csv
+import json
 import os
 import re
 
@@ -31,6 +32,9 @@ with open(os.path.join("data", "phunk_rankings.csv"), mode='r') as csv_file:
     for row in csv_reader:
         rankings[int(row.get('id'))] = row.get('ranking')
 
+with open(os.path.join("data", "curated.json")) as f:
+    curated_contracts = json.loads(f.read())
+
 
 def get_short_address(address):
     short_addr = f"{address[:6]}...{address[-4:]}"
@@ -55,7 +59,7 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
 
     tweet_text = f"Phunk #{phunk_id} was flipped by {buyer_short}"
 
-    curated_holdings = get_curated_nfts_holdings(buyer, include_batch=True)
+    curated_holdings = get_curated_nfts_holdings(buyer, include_batch=True, curated_contracts=curated_contracts)
 
     try:
         eth_to_usd = get_latest_eth_price()
