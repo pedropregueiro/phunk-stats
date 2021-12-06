@@ -2,14 +2,17 @@ import os
 
 import requests
 import tweepy
+from dotenv import load_dotenv
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
-API_KEY = os.environ.get('TWITTER_API_KEY')
-API_KEY_SECRET = os.environ.get('TWITTER_API_SECRET')
-ACCESS_TOKEN = os.environ.get('TWITTER_ACCESS_TOKEN')
-ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_SECRET')
-BEARER_TOKEN = os.environ.get('TWITTER_BEARER_TOKEN')
+load_dotenv()
+
+API_KEY = os.getenv('TWITTER_API_KEY')
+API_KEY_SECRET = os.getenv('TWITTER_API_SECRET')
+ACCESS_TOKEN = os.getenv('TWITTER_ACCESS_TOKEN')
+ACCESS_TOKEN_SECRET = os.getenv('TWITTER_ACCESS_SECRET')
+BEARER_TOKEN = os.getenv('TWITTER_BEARER_TOKEN')
 
 retry_strategy = Retry(
     total=3,
