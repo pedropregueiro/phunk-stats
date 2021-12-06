@@ -1,0 +1,55 @@
+{
+  "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB": {
+    "name": "CryptoPunks",
+    "symbol": "PUNKS",
+    "website": "https://www.larvalabs.com/cryptopunks"
+  },
+  "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D": {
+    "name": "Bored Ape Yacht Club",
+    "symbol": "BAYC",
+    "website": "https://boredapeyachtclub.com/"
+  },
+  "0x1a92f7381b9f03921564a437210bb9396471050c": {
+    "name": "Cool Cats",
+    "symbol": "COOL",
+    "website": "https://www.coolcatsnft.com/"
+  },
+  "0x1CB1A5e65610AEFF2551A50f76a87a7d3fB649C6": {
+    "name": "Cryptoadz",
+    "symbol": "TOADZ",
+    "website": "https://cryptoadz.io/"
+  },
+  "0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03": {
+    "name": "Nouns",
+    "symbol": "NOUNS",
+    "website": "https://nouns.wtf/",
+    "show_flip": false
+  },
+  "0x7ea3cca10668b8346aec0bf1844a49e995527c8b": {
+    "name": "CyberKongz",
+    "symbol": "KONGZ",
+    "website": "https://www.cyberkongz.com/"
+  },
+  "0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270": {
+    "name": "Art Blocks",
+    "symbol": "BLOCKS",
+    "website": "https://www.artblocks.io/",
+    "show_flip": false,
+    "show_holdings": false
+  },
+  "0x64ba65ec863cB7db28C513f53804d9c4D56c14f2": {
+    "name": "Doodles",
+    "symbol": "DOODLES",
+    "website": "https://doodles.app/",
+    "show_flip": false
+  },
+  "0xEdB61f74B0d09B2558F1eeb79B247c1F363Ae452": {
+    "name": "Gutter Cat Gang",
+    "symbol": "GUTTER CATS",
+    "website": "https://guttercatgang.com/",
+    "show_flip": false,
+    "fetch_batch": true,
+    "total_supply_override_method": "adoptedCats",
+    "total_supply": 3000
+  }
+}
