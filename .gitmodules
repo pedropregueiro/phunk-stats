@@ -1,0 +1,3 @@
+[submodule "lib/web3_helpers"]
+	path = lib/web3_helpers
+	url = git@github.com:pedropregueiro/web3-helpers.git
