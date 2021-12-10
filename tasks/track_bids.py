@@ -9,8 +9,6 @@ from lib.web3_helpers.common.node import get_contract, get_ens_domain_for_addres
 from utils.coinbase import get_latest_eth_price
 from utils.twitter import tweet
 
-contract = get_contract(settings.MARKETPLACE_CONTRACT_ADDRESS, provider="websocket")
-
 
 def handle_event(event):
     print(f"event: {event}")
@@ -64,6 +62,7 @@ async def log_loop(event_filter, poll_interval):
 
 
 def main():
+    contract = get_contract(settings.MARKETPLACE_CONTRACT_ADDRESS, provider="websocket")
     event_filter = contract.events.PhunkBidEntered.createFilter(fromBlock='latest')
     loop = asyncio.get_event_loop()
     try:
