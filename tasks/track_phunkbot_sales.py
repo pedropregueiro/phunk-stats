@@ -54,7 +54,7 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
 
     try:
         eth_to_usd = get_latest_eth_price()
-        usd_amount = price_eth * eth_to_usd
+        usd_amount = float(price_eth) * eth_to_usd
         sale = {
             'buyer': buyer,
             'seller': seller,
