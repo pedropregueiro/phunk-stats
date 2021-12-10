@@ -15,9 +15,6 @@ from utils.coinbase import get_latest_eth_price
 from utils.database import save_sale
 from utils.twitter import get_tweet, create_stream, reply
 
-# @PhunkBot twitter user ID
-PHUNK_BOT_ID = 1411729093033332741
-
 tx_hash_pattern = re.compile(r'tx/(.+?)$', re.IGNORECASE)
 
 rankings = {}
@@ -105,7 +102,7 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
 
     try:
         if seller == settings.OPENSEA_CONTRACT_ADDRESS:
-            floor_token = get_tokens_for_sale(project_id=settings.PHUNK_CARGO_PROJECT_ID, limit=1, result_size=1)[0]
+            floor_token = get_tokens_for_sale(project_id=settings.CARGO_PROJECT_ID, limit=1, result_size=1)[0]
             floor_price = floor_token.get('floor')
 
             loss = (floor_price - price_eth) / floor_price
@@ -140,7 +137,7 @@ def handle_tweet(tweet_id, data=None, user=None):
     entities = data.get('entities')
     urls = entities.get('urls')
 
-    if author_id != PHUNK_BOT_ID:
+    if author_id != settings.BOT_TWITTER_ID:
         return
 
     for url in urls:
@@ -179,7 +176,7 @@ def start_stream():
         try:
             stream = create_stream(stream_cls=PhunkBotListener)
             print("Streaming...")
-            stream.filter(follow=[PHUNK_BOT_ID])
+            stream.filter(follow=[settings.BOT_TWITTER_ID])
         except Exception as e:
             print(f"found error streaming: {e}")
             continue

@@ -36,7 +36,9 @@ def get_tweet(tweet_id):
 
 
 def tweet(text, image_url=None):
-    media_id = None
+    if settings.is_test_mode():
+        print("Test mode, not tweeting!")
+        return
 
     if image_url:
         image_filename = "phunk.jpg"
@@ -64,4 +66,7 @@ def create_stream(stream_cls=None):
 
 
 def reply(tweet_id, reply_text):
+    if settings.is_test_mode():
+        print("Test mode, not tweeting!")
+        return
     twitter_api.update_status(status=reply_text, in_reply_to_status_id=tweet_id, auto_populate_reply_metadata=True)

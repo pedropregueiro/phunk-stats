@@ -5,8 +5,7 @@ import requests
 from web3 import Web3
 
 import settings
-from lib.web3_helpers.common.node import get_contract, get_ens_domain_for_address, get_transaction, \
-    decode_contract_transaction
+from lib.web3_helpers.common.node import get_contract, get_ens_domain_for_address, decode_contract_transaction
 from utils.coinbase import get_latest_eth_price
 from utils.twitter import tweet
 
@@ -31,7 +30,6 @@ def handle_event(event):
 
     print(f"## Tweeting new PHUNK bid {transaction_hash}...")
     etherscan_url = f"https://etherscan.io/tx/{transaction_hash}"
-    transaction = get_transaction(transaction_hash)
 
     tx_fn, tx_input = decode_contract_transaction(transaction_hash)
     function_name = tx_fn.fn_name

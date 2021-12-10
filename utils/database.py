@@ -1,11 +1,8 @@
 from datetime import datetime, timezone
 
 import pymongo
-from dotenv import load_dotenv
 
 import settings
-
-load_dotenv()
 
 mongo_client = pymongo.MongoClient(settings.MONGO_CONN_STRING)
 
