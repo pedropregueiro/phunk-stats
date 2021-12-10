@@ -12,7 +12,6 @@ retry_strategy = Retry(
 adapter = HTTPAdapter(max_retries=retry_strategy)
 http = requests.Session()
 http.mount("https://", adapter)
-http.mount("http://", adapter)
 
 try:
     auth = tweepy.OAuthHandler(settings.TWITTER_API_KEY, settings.TWITTER_API_KEY_SECRET)

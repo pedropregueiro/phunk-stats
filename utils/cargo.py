@@ -3,9 +3,11 @@ import math
 import requests
 from web3 import Web3
 
+CARGO_BASE_ENDPOINT_URL = "https://api3.cargo.build/v3"
+
 
 def get_tokens_for_sale(project_id, filters=None, limit=200, chain="eth", result_size=None):
-    endpoint = "https://api3.cargo.build/v3/get-resale-items"
+    endpoint = f"{CARGO_BASE_ENDPOINT_URL}/get-resale-items"
     page = 1
 
     query_params = {
@@ -32,6 +34,8 @@ def get_tokens_for_sale(project_id, filters=None, limit=200, chain="eth", result
 
         results.extend(json_resp.get('results'))
 
+    # TODO: this logic could definitely be improved and added into the loop. might not be worth it
+    #  as we stop using cargo.
     counter = 0
     for token in results:
         token_id = token.get('tokenId')

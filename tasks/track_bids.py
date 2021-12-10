@@ -51,6 +51,8 @@ def handle_event(event):
 """
     print(tweet_text)
     print("\n\n")
+
+    # TODO: add 'anti-spam' logic here
     tweet(tweet_text, image_url=image_url)
 
 
