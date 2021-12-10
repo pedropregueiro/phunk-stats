@@ -30,6 +30,7 @@ SNIPING_FLOOR_PERCENTILE = int(os.environ.get("SNIPING_FLOOR_PERCENTILE", 25))
 CARGO_PROJECT_ID = "60cfe668b0efb10008c3ce10"
 # @PhunkBot twitter user ID
 BOT_TWITTER_ID = 1411729093033332741
+COVALENT_API_KEY = os.environ.get("COVALENT_API_KEY")
 
 
 def is_test_mode():
