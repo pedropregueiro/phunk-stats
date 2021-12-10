@@ -7,6 +7,7 @@ import tweepy
 from tweepy.models import Status
 from web3 import Web3
 
+import settings
 from lib.web3_helpers.common.node import get_ens_domain_for_address, get_transaction, get_curated_nfts_holdings, \
     get_nft_holdings
 from utils.cargo import get_tokens_for_sale
@@ -16,13 +17,6 @@ from utils.twitter import get_tweet, create_stream, reply
 
 # @PhunkBot twitter user ID
 PHUNK_BOT_ID = 1411729093033332741
-PHUNK_CONTRACT_ADDRESS = "0xf07468ead8cf26c752c676e43c814fee9c8cf402"
-
-# Cargo API project ID, used to fetch Phunks' floor value
-PHUNK_CARGO_PROJECT_ID = "60cfe668b0efb10008c3ce10"
-
-# Used for spotting transactions exploiting the OpenSea hack
-OPENSEA_CONTRACT_ADDRESS = "0x7Be8076f4EA4A4AD08075C2508e481d6C946D12b"
 
 tx_hash_pattern = re.compile(r'tx/(.+?)$', re.IGNORECASE)
 
@@ -77,7 +71,7 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
         print(f"issues storing sales: {e}")
 
     phunk_holdings = get_nft_holdings(wallet_address=buyer,
-                                      contract_address=PHUNK_CONTRACT_ADDRESS,
+                                      contract_address=settings.PHUNK_CONTRACT_ADDRESS,
                                       contract_metadata={"name": "CryptoPhunks", "symbol": "PHUNKS",
                                                          "website": "https://www.notlarvalabs.com/"})
     if phunk_holdings:
@@ -110,8 +104,8 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
     reply(tweet_id=tweet_id, reply_text=tweet_text)
 
     try:
-        if seller == OPENSEA_CONTRACT_ADDRESS:
-            floor_token = get_tokens_for_sale(project_id=PHUNK_CARGO_PROJECT_ID, limit=1, result_size=1)[0]
+        if seller == settings.OPENSEA_CONTRACT_ADDRESS:
+            floor_token = get_tokens_for_sale(project_id=settings.PHUNK_CARGO_PROJECT_ID, limit=1, result_size=1)[0]
             floor_price = floor_token.get('floor')
 
             loss = (floor_price - price_eth) / floor_price

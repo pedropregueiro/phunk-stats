@@ -1,13 +1,13 @@
-import os
 from datetime import datetime, timezone
 
 import pymongo
 from dotenv import load_dotenv
 
+import settings
+
 load_dotenv()
 
-MONGO_CONN_STRING = os.getenv('MONGO_CONN_STRING')
-mongo_client = pymongo.MongoClient(MONGO_CONN_STRING)
+mongo_client = pymongo.MongoClient(settings.MONGO_CONN_STRING)
 
 sales_coll = mongo_client['phunks']['sales']
 holders_coll = mongo_client['phunks']['holders']

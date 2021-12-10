@@ -1,22 +1,16 @@
 import asyncio
-import os
 import time
 
 import requests
-from dotenv import load_dotenv
 from web3 import Web3
 
+import settings
 from lib.web3_helpers.common.node import get_contract, get_ens_domain_for_address, get_transaction, \
     decode_contract_transaction
 from utils.coinbase import get_latest_eth_price
 from utils.twitter import tweet
 
-load_dotenv()
-
-MARKETPLACE_CONTRACT_ADDRESS = "0x3a6aDb264C96258C70681DF32a80dA027baDAB5f"
-contract = get_contract(MARKETPLACE_CONTRACT_ADDRESS, provider="websocket")
-
-POLLING_TIME_SECONDS = int(os.getenv("BIDS_POLLING_TIME", 30))
+contract = get_contract(settings.MARKETPLACE_CONTRACT_ADDRESS, provider="websocket")
 
 
 def handle_event(event):
@@ -75,7 +69,7 @@ def main():
     try:
         loop.run_until_complete(
             asyncio.gather(
-                log_loop(event_filter, POLLING_TIME_SECONDS)))
+                log_loop(event_filter, settings.POLLING_TIME_SECONDS)))
     finally:
         loop.close()
 

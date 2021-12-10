@@ -1,18 +1,9 @@
-import os
-
 import requests
 import tweepy
-from dotenv import load_dotenv
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
-load_dotenv()
-
-API_KEY = os.getenv('TWITTER_API_KEY')
-API_KEY_SECRET = os.getenv('TWITTER_API_SECRET')
-ACCESS_TOKEN = os.getenv('TWITTER_ACCESS_TOKEN')
-ACCESS_TOKEN_SECRET = os.getenv('TWITTER_ACCESS_SECRET')
-BEARER_TOKEN = os.getenv('TWITTER_BEARER_TOKEN')
+import settings
 
 retry_strategy = Retry(
     total=3,
@@ -24,15 +15,15 @@ http.mount("https://", adapter)
 http.mount("http://", adapter)
 
 try:
-    auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
-    auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+    auth = tweepy.OAuthHandler(settings.TWITTER_API_KEY, settings.TWITTER_API_KEY_SECRET)
+    auth.set_access_token(settings.TWITTER_ACCESS_TOKEN, settings.TWITTER_ACCESS_TOKEN_SECRET)
 
     twitter_api = tweepy.API(auth)
-    twitter_client = tweepy.Client(consumer_key=API_KEY,
-                                   consumer_secret=API_KEY_SECRET,
-                                   access_token=ACCESS_TOKEN,
-                                   access_token_secret=ACCESS_TOKEN_SECRET,
-                                   bearer_token=BEARER_TOKEN,
+    twitter_client = tweepy.Client(consumer_key=settings.TWITTER_API_KEY,
+                                   consumer_secret=settings.TWITTER_API_KEY_SECRET,
+                                   access_token=settings.TWITTER_ACCESS_TOKEN,
+                                   access_token_secret=settings.TWITTER_ACCESS_TOKEN_SECRET,
+                                   bearer_token=settings.TWITTER_BEARER_TOKEN,
                                    )
 except Exception as e:
     print("problems starting Twitter API")
@@ -63,11 +54,13 @@ def tweet(text, image_url=None):
 
 def create_stream(stream_cls=None):
     if not stream_cls:
-        return tweepy.Stream(consumer_key=API_KEY, consumer_secret=API_KEY_SECRET,
-                             access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET)
+        return tweepy.Stream(consumer_key=settings.TWITTER_API_KEY, consumer_secret=settings.TWITTER_API_KEY_SECRET,
+                             access_token=settings.TWITTER_ACCESS_TOKEN,
+                             access_token_secret=settings.TWITTER_ACCESS_TOKEN_SECRET)
     else:
-        return stream_cls(consumer_key=API_KEY, consumer_secret=API_KEY_SECRET,
-                          access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET)
+        return stream_cls(consumer_key=settings.TWITTER_API_KEY, consumer_secret=settings.TWITTER_API_KEY_SECRET,
+                          access_token=settings.TWITTER_ACCESS_TOKEN,
+                          access_token_secret=settings.TWITTER_ACCESS_TOKEN_SECRET)
 
 
 def reply(tweet_id, reply_text):
