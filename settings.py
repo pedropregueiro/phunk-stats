@@ -25,12 +25,13 @@ TWITTER_BEARER_TOKEN = os.getenv('TWITTER_BEARER_TOKEN')
 
 # Misc.
 POLLING_TIME_SECONDS = int(os.getenv("BIDS_POLLING_TIME", 30))
-SNIPING_FLOOR_PERCENTILE = int(os.environ.get("SNIPING_FLOOR_PERCENTILE", 25))
+SNIPING_FLOOR_PERCENTILE = int(os.getenv("SNIPING_FLOOR_PERCENTILE", 25))
 # used to fetch Phunks' floor value
 CARGO_PROJECT_ID = "60cfe668b0efb10008c3ce10"
 # @PhunkBot twitter user ID
 BOT_TWITTER_ID = 1411729093033332741
-COVALENT_API_KEY = os.environ.get("COVALENT_API_KEY")
+COVALENT_API_KEY = os.getenv("COVALENT_API_KEY")
+MORALIS_API_KEY = os.getenv("MORALIS_API_KEY")
 
 
 def is_test_mode():
