@@ -6,6 +6,7 @@ from web3 import Web3
 
 import settings
 from lib.web3_helpers.common.node import get_contract, get_ens_domain_for_address, decode_contract_transaction
+from utils.cargo import get_tokens_for_sale
 from utils.coinbase import get_latest_eth_price
 from utils.twitter import tweet
 
@@ -23,6 +24,19 @@ def handle_event(event):
         bidder_short = bidder_ens
 
     bid_eth_amount = Web3.fromWei(int(args.get('value')), 'ether')
+
+    if bid_eth_amount == 0:
+        print("ignoring 0 ETH bid")
+        return
+
+    try:
+        floor_token = get_tokens_for_sale(project_id=settings.CARGO_PROJECT_ID, limit=500, result_size=1)[0]
+        floor_price = floor_token.get('floor')
+        if float(bid_eth_amount) < float(floor_price) * 0.8:
+            print(f"too low bid, assume it's space. floor: {floor_price:.2f} | bid: {bid_eth_amount:.2f}")
+            return
+    except Exception as e:
+        print(f"problem detecting spam bid: {e}")
 
     transaction_hash = event.get('transactionHash').hex()
 
