@@ -28,7 +28,9 @@ covalent_default_params = {
 
 
 def _paginate_request(endpoint, params):
-    page_size = 500
+    # there's a bug w/ pagination on Covalent. put this back to 500 when fixed
+    page_size = 10000
+
     page = 0
 
     params = {

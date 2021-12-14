@@ -14,8 +14,8 @@ import schedule
 
 import settings
 from lib.web3_helpers.common.node import get_ens_domain_for_address, get_curated_nfts_holdings
+from utils.covalent import get_nft_unique_owners
 from utils.database import get_latest_stats, get_holder, update_holder, save_holder, save_stats
-from utils.moralis import get_nft_unique_owners
 from utils.twitter import tweet
 
 # TODO: This needs a lot of love... It was made in one go and barely touched ever since. A lot of room for errors,
