@@ -11,7 +11,6 @@ from utils.database import get_latest_rarity_tweet, save_latest_rarity_tweet
 from utils.twitter import tweet
 
 rankings = {}
-
 with open(os.path.join("data", "phunk_rankings.csv"), mode='r') as csv_file:
     csv_reader = csv.DictReader(csv_file)
     for row in csv_reader:
@@ -47,8 +46,8 @@ def get_floor_deviation_phunk(traits_filter=None):
 
     below_tokens = []
     for index, score in enumerate(zscore_dist):
-        # less than 1 standard deviation away from floor average should be snipable
-        if score < -1:
+        # less than DEVIATING_ZSCORE standard deviation away from floor average should be snipable
+        if score < settings.SNIPER_DEVIATING_ZSCORE:
             below_tokens.insert(index, top_tokens[index])
 
     return below_tokens, mean_prices, stddev_prices
@@ -151,3 +150,8 @@ https://notlarvalabs.com/market/view/phunk/{phunk.get('token_id')}
                               "trait_name": filter_.get('trait_type'),
                               "trait_value": filter_.get('value')})
     tweet(tweet_text, image_urls=[image_url])
+
+
+if __name__ == '__main__':
+    filters = [{'trait_type': 'Eyes', 'value': '3D Glasses'}]
+    fetch_snipable_phunks(filters=filters, kind="deviation")

@@ -33,6 +33,9 @@ BOT_TWITTER_ID = 1411729093033332741
 COVALENT_API_KEY = os.getenv("COVALENT_API_KEY")
 MORALIS_API_KEY = os.getenv("MORALIS_API_KEY")
 
+# Sniper
+SNIPER_DEVIATING_ZSCORE = float(os.getenv("SNIPER_DEVIATING_ZSCORE", -1.25))
+
 
 def is_test_mode():
     return TESTING == 1
