@@ -38,7 +38,7 @@ args = my_parser.parse_args()
 should_run_now = args.run
 should_tweet = not args.silent
 
-with open("curated.json", "r") as f:
+with open(os.path.join("data", "curated.json")) as f:
     curated = json.loads(f.read())
 
 
