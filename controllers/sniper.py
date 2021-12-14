@@ -1,11 +1,9 @@
 import csv
 import math
 import os
-import time
 from statistics import mean, stdev, NormalDist
 
 import arrow
-import schedule as schedule
 
 import settings
 from utils.cargo import get_tokens_for_sale
@@ -99,7 +97,7 @@ def get_top_rarity_phunks(traits_filter=None, percentile=settings.SNIPING_FLOOR_
     return sorted_tokens
 
 
-def tweet_snipable_phunks(filters=None, percentile=settings.SNIPING_FLOOR_PERCENTILE, kind='rarity'):
+def fetch_snipable_phunks(filters=None, percentile=settings.SNIPING_FLOOR_PERCENTILE, kind='rarity'):
     if len(filters) > 1:
         raise NotImplementedError("not expecting more than 1 filter. DB will be upset")
 
@@ -153,49 +151,3 @@ https://notlarvalabs.com/market/view/phunk/{phunk.get('token_id')}
                               "trait_name": filter_.get('trait_type'),
                               "trait_value": filter_.get('value')})
     tweet(tweet_text, image_urls=[image_url])
-
-
-male_trait = [{'trait_type': 'Sex', 'value': 'Male'}]
-female_trait = [{'trait_type': 'Sex', 'value': 'Female'}]
-
-schedule.every(120).to(360).minutes.do(tweet_snipable_phunks, filters=male_trait)
-schedule.every(120).to(360).minutes.do(tweet_snipable_phunks, filters=female_trait)
-
-all_trait_scoops = [
-    [{'trait_type': 'Mouth', 'value': 'Medical Mask'}],
-    [{'trait_type': 'Neck', 'value': 'Gold Chain'}],
-    [{'trait_type': 'Beard', 'value': 'Luxurious Beard'}],
-    [{'trait_type': 'Beard', 'value': 'Big Beard'}],
-    [{'trait_type': 'Cheeks', 'value': 'Rosy Cheeks'}],
-    [{'trait_type': 'Eyes', 'value': 'Green Eye Shadow'}],
-    [{'trait_type': 'Eyes', 'value': 'Purple Eye Shadow'}],
-    [{'trait_type': 'Eyes', 'value': 'Blue Eye Shadow'}],
-    [{'trait_type': 'Eyes', 'value': 'Vr'}],
-    [{'trait_type': 'Eyes', 'value': '3D Glasses'}],
-    [{'trait_type': 'Eyes', 'value': 'Welding Goggles'}],
-    [{'trait_type': 'Face', 'value': 'Spots'}],
-    [{'trait_type': 'Teeth', 'value': 'Buck Teeth'}],
-    [{'trait_type': 'Hair', 'value': 'Orange Side'}],
-    [{'trait_type': 'Hair', 'value': 'Hoodie'}],
-    [{'trait_type': 'Hair', 'value': 'Beanie'}],
-    [{'trait_type': 'Hair', 'value': 'Half Shaved'}],
-    [{'trait_type': 'Hair', 'value': 'Wild White Hair'}],
-    [{'trait_type': 'Hair', 'value': 'Top Hat'}],
-    [{'trait_type': 'Hair', 'value': 'Cowboy Hat'}],
-    [{'trait_type': 'Hair', 'value': 'Red Mohawk'}],
-    [{'trait_type': 'Hair', 'value': 'Pink With Hat'}],
-    [{'trait_type': 'Hair', 'value': 'Clown Hair Green'}],
-    [{'trait_type': 'Nose', 'value': 'Clown Nose'}],
-    [{'trait_type': 'Emotion', 'value': 'Smile'}],
-    # TODO: need to change Cargo stuff to allow for this
-    # [{'trait_type': 'Trait Count', 'value': '1'}],
-    # [{'trait_type': 'Trait Count', 'value': '5'}],
-]
-
-for scoop in all_trait_scoops:
-    schedule.every(120).to(480).minutes.do(tweet_snipable_phunks, filters=scoop, kind='deviation')
-
-print("Sniping alerts scheduled...")
-while True:
-    schedule.run_pending()
-    time.sleep(30)
