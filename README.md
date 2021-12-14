@@ -12,7 +12,7 @@ The different bot tasks require different APIs/services, but in order to fully r
 2. [Etherscan API](https://etherscan.io/apis) to fetch and store ABIs for different contracts
 3. [Alchemy](https://www.alchemy.com/), [Infura](https://infura.io/) or similar to interact with ethereum node
    via `web3` package
-4. [Covalent](https://www.covalenthq.com/) to fetch aggregated NFT data like unique holders
+4. ~~Covalent~~ [Moralis](https://moralis.io/) to fetch aggregated NFT data like unique holders
 
 Apart from these, the bot uses `Python 3.9.9` and I recommend using `pyenv` or similar for virtual environment
 management.
