@@ -193,7 +193,7 @@ all_trait_scoops = [
 ]
 
 for scoop in all_trait_scoops:
-    schedule.every(120).to(480).seconds.do(tweet_snipable_phunks, filters=scoop, kind='deviation')
+    schedule.every(120).to(480).minutes.do(tweet_snipable_phunks, filters=scoop, kind='deviation')
 
 print("Sniping alerts scheduled...")
 while True:
