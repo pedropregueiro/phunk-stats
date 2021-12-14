@@ -127,7 +127,11 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-
+# PyCharm folders
 .idea/
 
+# ABI JSON files
 *.abi
+
+# MongoDB dumps
+mongo_dumps/
