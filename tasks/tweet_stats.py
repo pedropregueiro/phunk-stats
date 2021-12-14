@@ -39,7 +39,7 @@ should_run_now = args.run
 should_tweet = not args.silent
 
 with open(os.path.join("data", "curated.json")) as f:
-    curated = json.loads(f.read())
+    curated_contracts = json.loads(f.read())
 
 
 def get_progress_bar(percentage, bars=20):
@@ -121,7 +121,7 @@ def fetch_phunks_stats():
     new_holders_addresses = [h.get('_id') for h in list(new_holders)]
 
     total_holders = len(phunk_holders)
-    counter = 1
+    counter = 0
     for holder, token_ids in holders.items():
         counter += 1
         print(f"Handling holder {holder} | {counter}/{total_holders}")
@@ -133,7 +133,8 @@ def fetch_phunks_stats():
             if not new_holder and not DEEP_FETCH and db_holder:
                 curated_holdings = db_holder.get('holdings')
             else:
-                curated_holdings = get_curated_nfts_holdings(holder, include_batch=False)
+                curated_holdings = get_curated_nfts_holdings(holder, include_batch=False,
+                                                             curated_contracts=curated_contracts)
         except Exception as e:
             print(f"problems feching holdings for {holder}: {e}")
             continue
@@ -186,7 +187,7 @@ def fetch_phunks_stats():
 
     print("\n\nTweeting holdings...")
 
-    for addr, meta in curated.items():
+    for addr, meta in curated_contracts.items():
         symbol = meta.get('symbol')
         if not meta.get('show_holdings', True):
             del sorted_holdings[symbol]
@@ -210,7 +211,7 @@ def fetch_phunks_stats():
     print("\n\nTweeting unique holders...")
 
     unique_owners = {}
-    for addr, meta in curated.items():
+    for addr, meta in curated_contracts.items():
         if not meta.get('show_flip', True):
             continue
         hdrs = get_nft_unique_owners(addr)
