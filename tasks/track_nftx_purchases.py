@@ -60,7 +60,7 @@ Phunk #{str(token_id).zfill(4)} was flipped for Ξ{price_eth:.2f} (${price_usd:.
 
         print(tweet_text)
         print("\n\n")
-        tweet(tweet_text, image_url=image_url)
+        tweet(tweet_text, image_urls=[image_url])
 
 
 async def log_loop(event_filter, poll_interval):

@@ -18,6 +18,10 @@ def save_sale(sale_data):
     return inserted.inserted_id
 
 
+def fetch_sales(filters=None):
+    return sales_coll.find(filter=filters, sort=[("eth_amount", pymongo.DESCENDING)])
+
+
 def save_holder(holder_data):
     holder_data['created_at'] = datetime.now(timezone.utc)
     inserted = holders_coll.insert_one(holder_data)

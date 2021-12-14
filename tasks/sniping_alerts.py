@@ -152,7 +152,7 @@ https://notlarvalabs.com/market/view/phunk/{phunk.get('token_id')}
     save_latest_rarity_tweet({"token_id": phunk.get('token_id'),
                               "trait_name": filter_.get('trait_type'),
                               "trait_value": filter_.get('value')})
-    tweet(tweet_text, image_url=image_url)
+    tweet(tweet_text, image_urls=[image_url])
 
 
 male_trait = [{'trait_type': 'Sex', 'value': 'Male'}]

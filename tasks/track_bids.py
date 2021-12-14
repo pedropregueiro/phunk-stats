@@ -65,7 +65,7 @@ def handle_event(event):
     print("\n\n")
 
     # TODO: add 'anti-spam' logic here
-    tweet(tweet_text, image_url=image_url)
+    tweet(tweet_text, image_urls=[image_url])
 
 
 async def log_loop(event_filter, poll_interval):
