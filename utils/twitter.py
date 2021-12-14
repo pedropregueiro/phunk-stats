@@ -1,3 +1,5 @@
+import os
+
 import requests
 import tweepy
 from requests.adapters import HTTPAdapter
@@ -34,21 +36,24 @@ def get_tweet(tweet_id):
                                     tweet_fields=["entities", "in_reply_to_user_id"])
 
 
-def tweet(text, image_url=None):
+def tweet(text, image_urls=None, file_extension="jpg"):
     if settings.is_test_mode():
         print("[test mode, not tweeting]")
         return
 
-    if image_url:
-        image_filename = "phunk.jpg"
-        r = http.get(image_url)
-        with open(image_filename, "wb") as f:
-            f.write(r.content)
+    if image_urls:
+        media_ids = []
+        for index, image_url in enumerate(image_urls):
+            image_filename = os.path.join("data", f"phunk_{index}.{file_extension}")
+            r = http.get(image_url)
+            with open(image_filename, "wb") as f:
+                f.write(r.content)
 
-        media = twitter_api.media_upload(image_filename)
-        media_id = media.media_id
+            media = twitter_api.media_upload(image_filename)
+            media_ids.append(media.media_id)
+            os.remove(image_filename)
 
-        twitter_client.create_tweet(text=text, media_ids=[media_id])
+        twitter_client.create_tweet(text=text, media_ids=media_ids)
     else:
         twitter_client.create_tweet(text=text)
 
