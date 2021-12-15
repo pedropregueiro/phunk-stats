@@ -6,8 +6,9 @@ from statistics import mean, stdev, NormalDist
 import arrow
 
 import settings
-from utils.cargo import get_tokens_for_sale
 from utils.database import get_latest_rarity_tweet, save_latest_rarity_tweet
+from utils.nll_marketplace import get_tokens_for_sale
+from utils.phunks import get_phunk_image_url
 from utils.twitter import tweet
 
 rankings = {}
@@ -29,7 +30,7 @@ def get_percentiles(data, percentile):
 def get_floor_deviation_phunk(traits_filter=None):
     print(f"filters: {traits_filter}")
     no_fetch = 5
-    top_tokens = get_tokens_for_sale(project_id=settings.CARGO_PROJECT_ID, filters=traits_filter, result_size=no_fetch)
+    top_tokens = get_tokens_for_sale(filters=traits_filter, result_size=no_fetch)
 
     if not top_tokens:
         return None, None, None
@@ -55,7 +56,7 @@ def get_floor_deviation_phunk(traits_filter=None):
 
 def get_top_rarity_phunks(traits_filter=None, percentile=settings.SNIPING_FLOOR_PERCENTILE):
     print(f"filters: {traits_filter} | percentile: {percentile}")
-    top_tokens = get_tokens_for_sale(project_id=settings.CARGO_PROJECT_ID, filters=traits_filter, result_size=100)
+    top_tokens = get_tokens_for_sale(filters=traits_filter, result_size=100)
 
     for token in top_tokens:
         token['rarity'] = rankings[int(token.get('token_id'))]
@@ -137,11 +138,7 @@ PHUNK #{phunk.get('token_id').zfill(4)} listed for Ξ{phunk.get('price_eth'):.2f
 https://notlarvalabs.com/market/view/phunk/{phunk.get('token_id')}
 """
 
-    metadata = phunk.get('raw').get('metadata')
-    image_url = metadata.get('image_url')
-    if image_url and 'pinata.cloud' in image_url:
-        # Pinata cloud has some serious rate limiting
-        image_url = image_url.replace('https://gateway.pinata.cloud/', 'https://cloudflare-ipfs.com/')
+    image_url = get_phunk_image_url(phunk.get("token_id"))
 
     print("\n\nTweeting scoop!")
     print(tweet_text)
@@ -153,5 +150,5 @@ https://notlarvalabs.com/market/view/phunk/{phunk.get('token_id')}
 
 
 if __name__ == '__main__':
-    filters = [{'trait_type': 'Eyes', 'value': '3D Glasses'}]
+    filters = [{'trait_type': 'Neck', 'value': 'Gold Chain'}]
     fetch_snipable_phunks(filters=filters, kind="deviation")

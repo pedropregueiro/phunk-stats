@@ -10,9 +10,9 @@ from web3 import Web3
 import settings
 from lib.web3_helpers.common.node import get_ens_domain_for_address, get_transaction, get_curated_nfts_holdings, \
     get_nft_holdings, decode_contract_transaction
-from utils.cargo import get_tokens_for_sale
 from utils.coinbase import get_latest_eth_price
 from utils.database import save_sale
+from utils.nll_marketplace import get_tokens_for_sale
 from utils.twitter import get_tweet, create_stream, reply
 
 tx_hash_pattern = re.compile(r'tx/(.+?)$', re.IGNORECASE)
@@ -112,7 +112,7 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
 
     try:
         if seller == settings.OPENSEA_CONTRACT_ADDRESS:
-            floor_token = get_tokens_for_sale(project_id=settings.CARGO_PROJECT_ID, limit=1, result_size=1)[0]
+            floor_token = get_tokens_for_sale(result_size=1)[0]
             floor_price = floor_token.get('floor')
 
             loss = (floor_price - price_eth) / floor_price
