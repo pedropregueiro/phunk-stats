@@ -28,15 +28,6 @@ holders_coll = mongo_client['phunks']['holders']
 DEEP_FETCH = os.environ.get("DEEP_FETCH", True)  # change this to False to make things quicker
 TOP_SALES_COUNT = 4
 
-# script can be executed as cli for testing or one-time runs
-my_parser = argparse.ArgumentParser()
-my_parser.add_argument('-s', '--silent', action="store_true")
-my_parser.add_argument('-a', '--aggregated', action="store_true")
-
-args = my_parser.parse_args()
-should_tweet = not args.silent
-run_aggregated = args.aggregated
-
 with open(os.path.join("data", "curated.json")) as f:
     curated_contracts = json.loads(f.read())
 
@@ -88,7 +79,7 @@ def get_holders_diff(previous_stats, current_holders, last_checked, last_checked
     return f"({diff} since {last_checked_date.humanize()})"
 
 
-def fetch_phunks_stats():
+def fetch_phunks_stats(should_tweet=True):
     print("Getting unique NFT owners...")
 
     try:
@@ -245,7 +236,7 @@ def fetch_phunks_stats():
         tweet(tweet_content)
 
 
-def get_aggregated_stats():
+def get_aggregated_stats(should_tweet=True):
     now = datetime.now(timezone.utc)
 
     filters = {
@@ -301,7 +292,16 @@ Top sales:
 
 
 if __name__ == '__main__':
-    if run_aggregated:
-        get_aggregated_stats()
+    # script can be executed as cli for testing or one-time runs
+    my_parser = argparse.ArgumentParser()
+    my_parser.add_argument('-s', '--silent', action="store_true")
+    my_parser.add_argument('-a', '--aggregated', action="store_true")
+
+    args = my_parser.parse_args()
+    tweet = not args.silent
+    aggregated = args.aggregated
+
+    if aggregated:
+        get_aggregated_stats(should_tweet=tweet)
     else:
-        fetch_phunks_stats()
+        fetch_phunks_stats(should_tweet=tweet)

@@ -70,6 +70,7 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
             'eth_amount': float(price_eth),
             'usd_amount': float(usd_amount),
             'transaction_hash': tx_hash,
+            'func': function_name,
             'token_id': phunk_id,
         }
         save_sale(sale)
