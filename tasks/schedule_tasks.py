@@ -73,8 +73,6 @@ if __name__ == '__main__':
     should_run_stats = args.stats
     should_run_aggregated_stats = args.aggregated_stats
 
-    print(f"should run sniper: {should_run_sniper}")
-
     set_schedules(run_sniper=should_run_sniper, run_stats=should_run_stats, run_aggregated=should_run_aggregated_stats)
 
     print("Scheduling all tasks...")
