@@ -102,7 +102,7 @@ def fetch_snipable_phunks(filters=None, percentile=settings.SNIPING_FLOOR_PERCEN
         raise NotImplementedError("not expecting more than 1 filter. DB will be upset")
 
     filter_ = filters[0]
-    last_tweeted = get_latest_rarity_tweet(trait_name=filter_.get('trait_type'), trait_value=filter_.get('value'))
+    last_tweeted = get_latest_rarity_tweet(trait_name=filter_.get('key'), trait_value=filter_.get('value'))
     last_tweeted_token_id = None
     last_tweeted_diff_seconds = 1
     if last_tweeted:
@@ -130,7 +130,7 @@ def fetch_snipable_phunks(filters=None, percentile=settings.SNIPING_FLOOR_PERCEN
     if phunk_id == last_tweeted_token_id and last_tweeted_diff_seconds < (12 * 60 * 60):  # 12 hours in seconds
         return
 
-    tweet_text = f"""🧹 {title} // {filter_.get('trait_type')}: {filter_.get('value')} 🧹
+    tweet_text = f"""🧹 {title} // {filter_.get('key')}: {filter_.get('value')} 🧹
 
 PHUNK #{phunk.get('token_id').zfill(4)} listed for Ξ{phunk.get('price_eth'):.2f} (rarity {phunk.get('rarity')} / 10k)
 {second_liner if second_liner else ""}
@@ -144,11 +144,11 @@ https://notlarvalabs.com/market/view/phunk/{phunk.get('token_id')}
     print(tweet_text)
 
     save_latest_rarity_tweet({"token_id": phunk.get('token_id'),
-                              "trait_name": filter_.get('trait_type'),
+                              "trait_name": filter_.get('key'),
                               "trait_value": filter_.get('value')})
     tweet(tweet_text, image_urls=[image_url])
 
 
 if __name__ == '__main__':
-    filters = [{'trait_type': 'Neck', 'value': 'Gold Chain'}]
+    filters = [{'key': 'Neck', 'value': 'Gold Chain'}]
     fetch_snipable_phunks(filters=filters, kind="deviation")

@@ -19,42 +19,42 @@ def set_schedules(run_sniper=False, run_stats=False, run_aggregated=False):
         schedule.every().day.at("16:00").do(get_aggregated_stats)
 
     # Basic sniping alerts (male/female)
-    male_trait = [{'trait_type': 'Sex', 'value': 'Male'}]
-    female_trait = [{'trait_type': 'Sex', 'value': 'Female'}]
+    male_trait = [{'key': 'Sex', 'value': 'Male'}]
+    female_trait = [{'key': 'Sex', 'value': 'Female'}]
 
     if run_sniper:
         schedule.every(120).to(360).minutes.do(fetch_snipable_phunks, filters=male_trait)
         schedule.every(120).to(360).minutes.do(fetch_snipable_phunks, filters=female_trait)
 
     all_trait_scoops = [
-        [{'trait_type': 'Mouth', 'value': 'Medical Mask'}],
-        [{'trait_type': 'Neck', 'value': 'Gold Chain'}],
-        [{'trait_type': 'Beard', 'value': 'Luxurious Beard'}],
-        [{'trait_type': 'Beard', 'value': 'Big Beard'}],
-        [{'trait_type': 'Cheeks', 'value': 'Rosy Cheeks'}],
-        [{'trait_type': 'Eyes', 'value': 'Green Eye Shadow'}],
-        [{'trait_type': 'Eyes', 'value': 'Purple Eye Shadow'}],
-        [{'trait_type': 'Eyes', 'value': 'Blue Eye Shadow'}],
-        [{'trait_type': 'Eyes', 'value': 'Vr'}],
-        [{'trait_type': 'Eyes', 'value': '3D Glasses'}],
-        [{'trait_type': 'Eyes', 'value': 'Welding Goggles'}],
-        [{'trait_type': 'Face', 'value': 'Spots'}],
-        [{'trait_type': 'Teeth', 'value': 'Buck Teeth'}],
-        [{'trait_type': 'Hair', 'value': 'Orange Side'}],
-        [{'trait_type': 'Hair', 'value': 'Hoodie'}],
-        [{'trait_type': 'Hair', 'value': 'Beanie'}],
-        [{'trait_type': 'Hair', 'value': 'Half Shaved'}],
-        [{'trait_type': 'Hair', 'value': 'Wild White Hair'}],
-        [{'trait_type': 'Hair', 'value': 'Top Hat'}],
-        [{'trait_type': 'Hair', 'value': 'Cowboy Hat'}],
-        [{'trait_type': 'Hair', 'value': 'Red Mohawk'}],
-        [{'trait_type': 'Hair', 'value': 'Pink With Hat'}],
-        [{'trait_type': 'Hair', 'value': 'Clown Hair Green'}],
-        [{'trait_type': 'Nose', 'value': 'Clown Nose'}],
-        [{'trait_type': 'Emotion', 'value': 'Smile'}],
+        [{'key': 'Mouth', 'value': 'Medical Mask'}],
+        [{'key': 'Neck', 'value': 'Gold Chain'}],
+        [{'key': 'Beard', 'value': 'Luxurious Beard'}],
+        [{'key': 'Beard', 'value': 'Big Beard'}],
+        [{'key': 'Cheeks', 'value': 'Rosy Cheeks'}],
+        [{'key': 'Eyes', 'value': 'Green Eye Shadow'}],
+        [{'key': 'Eyes', 'value': 'Purple Eye Shadow'}],
+        [{'key': 'Eyes', 'value': 'Blue Eye Shadow'}],
+        [{'key': 'Eyes', 'value': 'Vr'}],
+        [{'key': 'Eyes', 'value': '3D Glasses'}],
+        [{'key': 'Eyes', 'value': 'Welding Goggles'}],
+        [{'key': 'Face', 'value': 'Spots'}],
+        [{'key': 'Teeth', 'value': 'Buck Teeth'}],
+        [{'key': 'Hair', 'value': 'Orange Side'}],
+        [{'key': 'Hair', 'value': 'Hoodie'}],
+        [{'key': 'Hair', 'value': 'Beanie'}],
+        [{'key': 'Hair', 'value': 'Half Shaved'}],
+        [{'key': 'Hair', 'value': 'Wild White Hair'}],
+        [{'key': 'Hair', 'value': 'Top Hat'}],
+        [{'key': 'Hair', 'value': 'Cowboy Hat'}],
+        [{'key': 'Hair', 'value': 'Red Mohawk'}],
+        [{'key': 'Hair', 'value': 'Pink With Hat'}],
+        [{'key': 'Hair', 'value': 'Clown Hair Green'}],
+        [{'key': 'Nose', 'value': 'Clown Nose'}],
+        [{'key': 'Emotion', 'value': 'Smile'}],
         # TODO: need to change Cargo stuff to allow for this
-        # [{'trait_type': 'Trait Count', 'value': '1'}],
-        # [{'trait_type': 'Trait Count', 'value': '5'}],
+        # [{'key': 'Trait Count', 'value': '1'}],
+        # [{'key': 'Trait Count', 'value': '5'}],
     ]
 
     if run_sniper:

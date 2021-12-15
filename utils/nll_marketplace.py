@@ -7,11 +7,6 @@ NLL_BASE_ENDPOINT_URL = "https://nll-backend-9qj3q.ondigitalocean.app"
 def get_tokens_for_sale(filters=None, result_size=None):
     endpoint = f"{NLL_BASE_ENDPOINT_URL}/static/phunks-market-data"
 
-    # use "key", "value" instead "trait_type", "value"
-    for index, filter_ in enumerate(filters):
-        new_filter = {"key": filter_.get("trait_type"), "value": filter_.get("value")}
-        filters[index] = new_filter
-
     tokens = []
     floor = None
 
