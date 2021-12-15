@@ -39,6 +39,10 @@ def get_floor_deviation_phunk(traits_filter=None):
         token['rarity'] = rankings[int(token.get('token_id'))]
 
     prices = [token.get('price_eth') for token in top_tokens]
+    if len(prices) < 2:
+        print("not enough tokens for sale")
+        return None, None, None
+
     mean_prices = mean(prices)
     stddev_prices = stdev(prices)
 
@@ -150,5 +154,5 @@ https://notlarvalabs.com/market/view/phunk/{phunk.get('token_id')}
 
 
 if __name__ == '__main__':
-    filters = [{'key': 'Neck', 'value': 'Gold Chain'}]
+    filters = [{'key': 'Eyes', 'value': 'Welding Goggles'}]
     fetch_snipable_phunks(filters=filters, kind="deviation")
