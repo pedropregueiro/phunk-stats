@@ -42,6 +42,7 @@ def handle_event(event):
 
     print(f"## Tweeting new PHUNK bid {transaction_hash}...")
     etherscan_url = f"https://etherscan.io/tx/{transaction_hash}"
+    nll_url = f"https://www.notlarvalabs.com/cryptophunks/details/{int(phunk_id)}"
 
     tx_fn, tx_input = decode_contract_transaction(transaction_hash)
     function_name = tx_fn.fn_name
@@ -59,7 +60,8 @@ def handle_event(event):
     tweet_text = f"""Phunk #{str(phunk_id).zfill(4)} has a new bid of Ξ{bid_eth_amount:.2f} (${price_usd:.2f}) placed by {bidder_short}
 
 {etherscan_url}
-#CryptoPhunks #Phunks #NFTs https://notlarvalabs.com/
+{nll_url}
+#CryptoPhunks #Phunks #NFTs
 """
     print(tweet_text)
     print("\n\n")
