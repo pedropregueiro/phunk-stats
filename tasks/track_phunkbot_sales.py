@@ -9,7 +9,7 @@ from web3 import Web3
 
 import settings
 from lib.web3_helpers.common.node import get_ens_domain_for_address, get_transaction, get_curated_nfts_holdings, \
-    get_nft_holdings
+    get_nft_holdings, decode_contract_transaction
 from utils.cargo import get_tokens_for_sale
 from utils.coinbase import get_latest_eth_price
 from utils.database import save_sale
@@ -42,11 +42,20 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
     price = tx.get('value')
     price_eth = Web3.fromWei(int(price), 'ether')
 
+    tx_fn, tx_input = decode_contract_transaction(tx_hash)
+    function_name = tx_fn.fn_name
+    print(f"function: {function_name}")
+    print(f"input: {tx_input}")
+
     buyer_ens = get_ens_domain_for_address(buyer)
     buyer_short = f"{buyer[:6]}...{buyer[-4:]}"
 
     if buyer_ens:
         buyer_short = buyer_ens
+
+    if function_name == "enterBidForPhunk":
+        print("ignore bid tweets for now...")
+        return
 
     tweet_text = f"Phunk #{phunk_id} was flipped by {buyer_short}"
 
