@@ -1,7 +1,7 @@
 import requests
 from web3 import Web3
 
-NLL_BASE_ENDPOINT_URL = "https://nll-backend-9qj3q.ondigitalocean.app"
+NLL_BASE_ENDPOINT_URL = "https://nll-v2-1-39luy.ondigitalocean.app"
 
 
 def get_tokens_for_sale(filters=None, result_size=None):
@@ -14,6 +14,10 @@ def get_tokens_for_sale(filters=None, result_size=None):
     print(f"took {response.elapsed.total_seconds()}s | {response.request.url}")
     json_resp = response.json()
     tokens_for_sale = json_resp.get("phunksOfferedForSale")
+
+    if not tokens_for_sale:
+        print(f"no tokens for sale w/ filters: {filters}")
+        return
 
     # TODO: for now data returned is unsorted and unfiltered. can be improved later once API supports it
     list_tokens_for_sale = [value for key, value in tokens_for_sale.items()]

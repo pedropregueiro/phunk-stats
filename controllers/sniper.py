@@ -55,6 +55,9 @@ def get_floor_deviation_phunk(traits_filter=None):
         if score < settings.SNIPER_DEVIATING_ZSCORE:
             below_tokens.insert(index, top_tokens[index])
 
+    if not below_tokens:
+        print("no snipable phunks found!")
+
     return below_tokens, mean_prices, stddev_prices
 
 
@@ -154,5 +157,5 @@ https://notlarvalabs.com/market/view/phunk/{phunk.get('token_id')}
 
 
 if __name__ == '__main__':
-    filters = [{'key': 'Eyes', 'value': 'Welding Goggles'}]
+    filters = [{'key': 'Hair', 'value': 'Orange Side'}]
     fetch_snipable_phunks(filters=filters, kind="deviation")
