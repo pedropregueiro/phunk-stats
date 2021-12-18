@@ -9,7 +9,7 @@ from web3 import Web3
 
 import settings
 from lib.web3_helpers.common.node import get_ens_domain_for_address, get_transaction, get_curated_nfts_holdings, \
-    get_nft_holdings, decode_contract_transaction
+    get_nft_holdings, decode_contract_transaction, get_transaction_receipt, get_receipt_events
 from utils.coinbase import get_latest_eth_price
 from utils.database import save_sale
 from utils.nll_marketplace import get_tokens_for_sale
@@ -47,15 +47,21 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
     print(f"function: {function_name}")
     print(f"input: {tx_input}")
 
+    if function_name == "enterBidForPhunk":
+        print("ignore bid tweets for now...")
+        return
+    elif function_name == "acceptBidForPhunk":
+        receipt = get_transaction_receipt(tx_hash)
+        events = get_receipt_events(receipt,
+                                    contract_address=settings.MARKETPLACE_CONTRACT_ADDRESS,
+                                    event_name="PhunkBought")
+        buyer = events[0].get('args').get('toAddress')
+
     buyer_ens = get_ens_domain_for_address(buyer)
     buyer_short = f"{buyer[:6]}...{buyer[-4:]}"
 
     if buyer_ens:
         buyer_short = buyer_ens
-
-    if function_name == "enterBidForPhunk":
-        print("ignore bid tweets for now...")
-        return
 
     tweet_text = f"Phunk #{phunk_id} was flipped by {buyer_short}"
 
