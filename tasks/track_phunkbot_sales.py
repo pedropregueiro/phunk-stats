@@ -1,4 +1,3 @@
-import csv
 import json
 import os
 import re
@@ -13,15 +12,10 @@ from lib.web3_helpers.common.node import get_ens_domain_for_address, get_transac
 from utils.coinbase import get_latest_eth_price
 from utils.database import save_sale
 from utils.nll_marketplace import get_tokens_for_sale
+from utils.phunks import get_phunk_rarity
 from utils.twitter import get_tweet, create_stream, reply
 
 tx_hash_pattern = re.compile(r'tx/(.+?)$', re.IGNORECASE)
-
-rankings = {}
-with open(os.path.join("data", "phunk_rankings.csv"), mode='r') as csv_file:
-    csv_reader = csv.DictReader(csv_file)
-    for row in csv_reader:
-        rankings[int(row.get('id'))] = row.get('ranking')
 
 with open(os.path.join("data", "curated.json")) as f:
     curated_contracts = json.loads(f.read())
@@ -107,7 +101,7 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
         tweet_text += "\n".join(ch_text)
 
     try:
-        tweet_text += f"\n\n#{phunk_id} rarity rank: {rankings[phunk_id]} / 10k"
+        tweet_text += f"\n\n#{phunk_id} rarity rank: {get_phunk_rarity(phunk_id)} / 10k"
     except Exception as e:
         print(f"problems fetching ranking for phunk id {phunk_id}: {e}")
         tweet_text += "\n"
