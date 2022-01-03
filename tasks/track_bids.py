@@ -5,14 +5,15 @@ import requests
 from web3 import Web3
 
 import settings
-from lib.web3_helpers.common.node import get_contract, get_ens_domain_for_address, decode_contract_transaction
+from lib.web3_helpers.common.node import get_contract, get_ens_domain_for_address, decode_contract_transaction, \
+    get_transaction
 from utils.coinbase import get_latest_eth_price
 from utils.nll_marketplace import get_tokens_for_sale
+from utils.phunks import get_phunk_image_url
 from utils.twitter import tweet
 
 
-def handle_event(event):
-    print(f"event: {event}")
+def handle_bid(event):
     args = event.get('args')
     phunk_id = args.get('phunkIndex')
     from_ = args.get('fromAddress')
@@ -62,12 +63,63 @@ def handle_event(event):
 {etherscan_url}
 {nll_url}
 #CryptoPhunks #Phunks #NFTs
-"""
+    """
     print(tweet_text)
     print("\n\n")
 
     # TODO: add 'anti-spam' logic here
     tweet(tweet_text, image_urls=[image_url])
+
+
+def handle_for_sale(event):
+    args = event.get('args')
+    phunk_id = args.get('phunkIndex')
+
+    for_sale_eth_amount = Web3.fromWei(int(args.get('minValue')), 'ether')
+    if for_sale_eth_amount == 0:
+        print("ignoring 0 ETH for sale listing")
+        return
+
+    transaction_hash = event.get('transactionHash').hex()
+
+    print(f"## Tweeting new PHUNK sale listing {transaction_hash}...")
+    etherscan_url = f"https://etherscan.io/tx/{transaction_hash}"
+    nll_url = f"https://www.notlarvalabs.com/cryptophunks/details/{int(phunk_id)}"
+
+    tx = get_transaction(transaction_hash)
+    seller = tx.get('from')
+    seller_ens = get_ens_domain_for_address(seller)
+    seller_short = f"{seller[:6]}...{seller[-4:]}"
+
+    if seller_ens:
+        seller_short = seller_ens
+
+    eth_to_usd = get_latest_eth_price()
+    price_usd = float(for_sale_eth_amount) * eth_to_usd
+
+    image_url = get_phunk_image_url(phunk_id)
+
+    tweet_text = f"""Phunk #{str(phunk_id).zfill(4)} has been put up for sale for Ξ{for_sale_eth_amount:.2f} (${price_usd:.2f}) by {seller_short}
+
+{etherscan_url}
+{nll_url}
+#CryptoPhunks #Phunks #NFTs
+"""
+    print(tweet_text)
+    print("\n\n")
+
+    tweet(tweet_text, image_urls=[image_url])
+
+
+def handle_event(event):
+    print(f"event: {event}")
+    event_name = event.get('event')
+    if event_name == "PhunkOffered":
+        handle_for_sale(event)
+    elif event_name == "PhunkBidEntered":
+        handle_bid(event)
+    else:
+        print(f"ignoring unexpected event: {event_name}")
 
 
 async def log_loop(event_filter, poll_interval):
@@ -79,18 +131,20 @@ async def log_loop(event_filter, poll_interval):
 
 def main():
     contract = get_contract(settings.MARKETPLACE_CONTRACT_ADDRESS, provider="websocket")
-    event_filter = contract.events.PhunkBidEntered.createFilter(fromBlock='latest')
+    bid_filter = contract.events.PhunkBidEntered.createFilter(fromBlock='latest')
+    for_sale_filter = contract.events.PhunkOffered.createFilter(fromBlock='latest')
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(
             asyncio.gather(
-                log_loop(event_filter, settings.POLLING_TIME_SECONDS)))
+                log_loop(bid_filter, settings.POLLING_TIME_SECONDS),
+                log_loop(for_sale_filter, settings.POLLING_TIME_SECONDS)))
     finally:
         loop.close()
 
 
 if __name__:
-    print("Listening to PhunkBidEntered events...")
+    print("Listening to Marketplace events...")
     exception_count = 0
     while True:
         try:
