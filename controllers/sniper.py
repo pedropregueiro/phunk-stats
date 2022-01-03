@@ -1,6 +1,4 @@
-import csv
 import math
-import os
 from statistics import mean, stdev, NormalDist
 
 import arrow
@@ -8,14 +6,8 @@ import arrow
 import settings
 from utils.database import get_latest_rarity_tweet, save_latest_rarity_tweet
 from utils.nll_marketplace import get_tokens_for_sale
-from utils.phunks import get_phunk_image_url
+from utils.phunks import get_phunk_image_url, get_phunk_rarity
 from utils.twitter import tweet
-
-rankings = {}
-with open(os.path.join("data", "phunk_rankings.csv"), mode='r') as csv_file:
-    csv_reader = csv.DictReader(csv_file)
-    for row in csv_reader:
-        rankings[int(row.get('id'))] = row.get('ranking')
 
 
 def get_percentiles(data, percentile):
@@ -36,7 +28,7 @@ def get_floor_deviation_phunk(traits_filter=None):
         return None, None, None
 
     for token in top_tokens:
-        token['rarity'] = rankings[int(token.get('token_id'))]
+        token['rarity'] = get_phunk_rarity(token.get('token_id'))
 
     prices = [token.get('price_eth') for token in top_tokens]
     if len(prices) < 2:
@@ -66,7 +58,7 @@ def get_top_rarity_phunks(traits_filter=None, percentile=settings.SNIPING_FLOOR_
     top_tokens = get_tokens_for_sale(filters=traits_filter, result_size=100)
 
     for token in top_tokens:
-        token['rarity'] = rankings[int(token.get('token_id'))]
+        token['rarity'] = get_phunk_rarity(token.get('token_id'))
 
     all_prices = [token.get('price_eth') for token in top_tokens]
     percentile = get_percentiles(all_prices, percentile)

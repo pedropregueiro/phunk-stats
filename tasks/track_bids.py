@@ -9,7 +9,7 @@ from lib.web3_helpers.common.node import get_contract, get_ens_domain_for_addres
     get_transaction
 from utils.coinbase import get_latest_eth_price
 from utils.nll_marketplace import get_tokens_for_sale
-from utils.phunks import get_phunk_image_url
+from utils.phunks import get_phunk_image_url, get_phunk_rarity
 from utils.twitter import tweet
 
 
@@ -94,12 +94,11 @@ def handle_for_sale(event):
     if seller_ens:
         seller_short = seller_ens
 
-    eth_to_usd = get_latest_eth_price()
-    price_usd = float(for_sale_eth_amount) * eth_to_usd
-
     image_url = get_phunk_image_url(phunk_id)
 
-    tweet_text = f"""Phunk #{str(phunk_id).zfill(4)} has been put up for sale for Ξ{for_sale_eth_amount:.2f} (${price_usd:.2f}) by {seller_short}
+    tweet_text = f"""Phunk #{str(phunk_id).zfill(4)} has been put up for sale for Ξ{for_sale_eth_amount:.2f} by {seller_short}
+
+Rarity: {get_phunk_rarity(phunk_id)} / 10k
 
 {etherscan_url}
 {nll_url}
