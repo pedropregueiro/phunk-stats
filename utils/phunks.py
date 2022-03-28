@@ -16,7 +16,7 @@ with open(os.path.join("data", "phunk_rankings.csv"), mode='r') as csv_file:
         rankings[int(row.get('id'))] = row.get('ranking')
 
 
-def get_phunk_image_url(token_id, kind="bid"):
+def get_phunk_image_url(token_id, kind="sale"):
     token_id = str(int(token_id))  # remove 0s
     bg_color = BG_COLOR_MAPPING.get(kind, BG_COLOR_MAPPING["sale"])
     image_url = f"{IMAGES_ENDPOINT}/phunk{token_id.zfill(4)}.png?bg={bg_color}"
