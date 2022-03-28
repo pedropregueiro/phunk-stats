@@ -1,7 +1,13 @@
 import csv
 import os
 
-IMAGE_S3_BUCKET = "https://phunks.s3.us-east-2.amazonaws.com/notpunks"
+IMAGES_ENDPOINT = "https://phunks.imgix.net/images"
+
+BG_COLOR_MAPPING = {
+    "bid": "9957b7",
+    "sale": "6A8494"
+}
+
 
 rankings = {}
 with open(os.path.join("data", "phunk_rankings.csv"), mode='r') as csv_file:
@@ -10,9 +16,10 @@ with open(os.path.join("data", "phunk_rankings.csv"), mode='r') as csv_file:
         rankings[int(row.get('id'))] = row.get('ranking')
 
 
-def get_phunk_image_url(token_id):
+def get_phunk_image_url(token_id, kind="bid"):
     token_id = str(int(token_id))  # remove 0s
-    image_url = f"{IMAGE_S3_BUCKET}/notpunk{token_id.zfill(4)}.png"
+    bg_color = BG_COLOR_MAPPING.get(kind, BG_COLOR_MAPPING["sale"])
+    image_url = f"{IMAGES_ENDPOINT}/phunk{token_id.zfill(4)}.png?bg={bg_color}"
     return image_url
 
 

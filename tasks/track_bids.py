@@ -1,7 +1,6 @@
 import asyncio
 import time
 
-import requests
 from web3 import Web3
 
 import settings
@@ -54,9 +53,7 @@ def handle_bid(event):
     price_usd = float(bid_eth_amount) * eth_to_usd
 
     # TODO: change this?
-    metadata_url = f"https://gateway.pinata.cloud/ipfs/QmQcoXyYKokyBHzN3yxDYgPP25cmZkm5Gqp5bzZsTDF7cd/{int(phunk_id)}"
-    metadata = requests.get(metadata_url)
-    image_url = metadata.json().get('image_url')
+    image_url = get_phunk_image_url(phunk_id, kind="bid")
 
     tweet_text = f"""Phunk #{str(phunk_id).zfill(4)} has a new bid of Ξ{bid_eth_amount:.2f} (${price_usd:.2f}) placed by {bidder_short}
 
