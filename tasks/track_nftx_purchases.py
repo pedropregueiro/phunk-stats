@@ -1,12 +1,12 @@
 import asyncio
 import time
 
-import requests
 from web3 import Web3
 
 import settings
 from lib.web3_helpers.common.node import get_transaction, decode_contract_transaction, get_contract
 from utils.coinbase import get_latest_eth_price
+from utils.phunks import get_phunk_image_url
 from utils.twitter import tweet
 
 
@@ -46,9 +46,7 @@ def handle_event(event):
         eth_to_usd = get_latest_eth_price()
         price_usd = float(price_eth) * eth_to_usd
 
-        metadata_url = f"https://gateway.pinata.cloud/ipfs/QmQcoXyYKokyBHzN3yxDYgPP25cmZkm5Gqp5bzZsTDF7cd/{int(token_id)}"
-        metadata = requests.get(metadata_url)
-        image_url = metadata.json().get('image_url')
+        image_url = get_phunk_image_url(token_id)
 
         tweet_text = f"""From the vault (nftx.io) 🥷 🏦
 
