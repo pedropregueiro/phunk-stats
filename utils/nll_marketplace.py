@@ -1,19 +1,17 @@
 import requests
 from web3 import Web3
 
-NLL_BASE_ENDPOINT_URL = "https://nll-v2-1-39luy.ondigitalocean.app"
+from settings import NLL_FOR_SALE_ENDPOINT
+from utils.phunks import get_phunk_attributes
 
 
 def get_tokens_for_sale(filters=None, result_size=None):
-    endpoint = f"{NLL_BASE_ENDPOINT_URL}/static/phunks-market-data"
-
     tokens = []
     floor = None
 
-    response = requests.get(endpoint)
-    print(f"took {response.elapsed.total_seconds()}s | {response.request.url}")
-    json_resp = response.json()
-    tokens_for_sale = json_resp.get("phunksOfferedForSale")
+    response = requests.get(NLL_FOR_SALE_ENDPOINT)
+    print(f"took {response.elapsed.total_seconds()}s | NLL_FOR_SALE_TOKENS")
+    tokens_for_sale = response.json()
 
     if not tokens_for_sale:
         print(f"no tokens for sale w/ filters: {filters}")
@@ -26,7 +24,7 @@ def get_tokens_for_sale(filters=None, result_size=None):
     counter = 0
     for token in sorted_tokens:
         token_id = token.get("phunkIndex")
-        attrs = token.get("data").get("properties")
+        attrs = get_phunk_attributes(token_id)
         if not attrs:
             print(f"did not find attributes for #{token_id}. ignoring...")
             continue
