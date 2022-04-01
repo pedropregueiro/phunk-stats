@@ -1,5 +1,6 @@
 import asyncio
 import time
+import traceback
 
 from web3 import Web3
 
@@ -121,7 +122,12 @@ def handle_event(event):
 async def log_loop(event_filter, poll_interval):
     while True:
         for event in event_filter.get_new_entries():
-            handle_event(event)
+            try:
+                handle_event(event)
+            except Exception as e:
+                print(f"problems handling event: {event}")
+                traceback.print_exc()
+
         await asyncio.sleep(poll_interval)
 
 

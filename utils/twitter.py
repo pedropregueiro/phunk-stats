@@ -46,6 +46,9 @@ def tweet(text, image_urls=None, file_extension="jpg"):
         for index, image_url in enumerate(image_urls):
             image_filename = os.path.join("data", f"phunk_{index}.{file_extension}")
             r = http.get(image_url)
+            if not r.ok:
+                r.raise_for_status()
+
             with open(image_filename, "wb") as f:
                 f.write(r.content)
 

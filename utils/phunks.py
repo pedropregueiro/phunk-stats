@@ -26,7 +26,7 @@ with open(os.path.join("data", "all-phunks.json")) as f:
 def get_phunk_image_url(token_id, kind="sale"):
     token_id = str(int(token_id))  # remove 0s
     bg_color = BG_COLOR_MAPPING.get(kind, BG_COLOR_MAPPING["sale"])
-    image_url = f"{IMAGES_ENDPOINT}/phunk{token_id.zfill(4)}.png?bg={bg_color}"
+    image_url = f"{IMAGES_ENDPOINT}/phunk{token_id}.png?bg={bg_color}"
     return image_url
 
 
