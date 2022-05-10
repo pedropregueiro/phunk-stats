@@ -9,6 +9,11 @@
     "symbol": "BAYC",
     "website": "https://boredapeyachtclub.com/"
   },
+  "0xED5AF388653567Af2F388E6224dC7C4b3241C544": {
+    "name": "Azuki",
+    "symbol": "AZUKI",
+    "website": "https://www.azuki.com/"
+  },
   "0x1a92f7381b9f03921564a437210bb9396471050c": {
     "name": "Cool Cats",
     "symbol": "COOL",
@@ -28,7 +33,8 @@
   "0x7ea3cca10668b8346aec0bf1844a49e995527c8b": {
     "name": "CyberKongz",
     "symbol": "KONGZ",
-    "website": "https://www.cyberkongz.com/"
+    "website": "https://www.cyberkongz.com/",
+    "show_flip": false
   },
   "0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270": {
     "name": "Art Blocks",

@@ -126,7 +126,7 @@ def fetch_phunks_stats(should_tweet=True):
                 curated_holdings = get_curated_nfts_holdings(holder, include_batch=False,
                                                              curated_contracts=curated_contracts)
         except Exception as e:
-            print(f"problems feching holdings for {holder}: {e}")
+            print(f"problems fetching holdings for {holder}: {e}")
             continue
 
         ch_tuples = []
@@ -298,10 +298,10 @@ if __name__ == '__main__':
     my_parser.add_argument('-a', '--aggregated', action="store_true")
 
     args = my_parser.parse_args()
-    tweet = not args.silent
+    should_tweet = not args.silent
     aggregated = args.aggregated
 
     if aggregated:
-        get_aggregated_stats(should_tweet=tweet)
+        get_aggregated_stats(should_tweet=should_tweet)
     else:
-        fetch_phunks_stats(should_tweet=tweet)
+        fetch_phunks_stats(should_tweet=should_tweet)
