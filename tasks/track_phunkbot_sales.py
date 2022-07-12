@@ -50,6 +50,9 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
                                     contract_address=settings.MARKETPLACE_CONTRACT_ADDRESS,
                                     event_name="PhunkBought")
         buyer = events[0].get('args').get('toAddress')
+    else:
+        print("not sure what to do with function: {function_name}")
+        return
 
     buyer_ens = get_ens_domain_for_address(buyer)
     buyer_short = f"{buyer[:6]}...{buyer[-4:]}"
