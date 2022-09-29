@@ -4,6 +4,7 @@ services:
     env: docker
     dockerCommand: python -m tasks.track_bids
     branch: main
+    region: frankfurt
     envVars:
       - fromGroup: settings
   - type: worker
@@ -11,6 +12,7 @@ services:
     env: docker
     dockerCommand: python -m tasks.track_phunkbot_sales
     branch: main
+    region: frankfurt
     envVars:
       - fromGroup: settings
   - type: worker
@@ -18,6 +20,7 @@ services:
     env: docker
     dockerCommand: python -m tasks.track_nftx_purchases
     branch: main
+    region: frankfurt
     envVars:
       - fromGroup: settings
   - type: worker
@@ -25,6 +28,7 @@ services:
     env: docker
     dockerCommand: python -m tasks.schedule_tasks --stats --sniper
     branch: main
+    region: frankfurt
     envVars:
       - fromGroup: settings
 
