@@ -6,6 +6,27 @@ services:
     branch: main
     envVars:
       - fromGroup: settings
+  - type: worker
+      name: sales
+      env: docker
+      dockerCommand: python -m tasks.track_phunkbot_sales
+      branch: main
+      envVars:
+        - fromGroup: settings
+  - type: worker
+      name: nftx
+      env: docker
+      dockerCommand: python -m tasks.track_nftx_purchases
+      branch: main
+      envVars:
+        - fromGroup: settings
+  - type: schedule
+      name: bids
+      env: docker
+      dockerCommand: python -m tasks.schedule_tasks --stats --sniper
+      branch: main
+      envVars:
+        - fromGroup: settings
 
 
 
