@@ -20,8 +20,8 @@ services:
     branch: main
     envVars:
       - fromGroup: settings
-  - type: schedule
-    name: bids
+  - type: worker
+    name: schedule
     env: docker
     dockerCommand: python -m tasks.schedule_tasks --stats --sniper
     branch: main
