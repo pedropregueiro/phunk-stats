@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import re
 
@@ -15,6 +16,11 @@ from utils.nll_marketplace import get_tokens_for_sale
 from utils.phunks import get_phunk_rarity
 from utils.twitter import get_tweet, create_stream, reply
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+
 tx_hash_pattern = re.compile(r'tx/(.+?)$', re.IGNORECASE)
 
 with open(os.path.join("data", "curated.json")) as f:
@@ -29,7 +35,7 @@ def get_short_address(address):
 
 def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=None):
     tx = get_transaction(tx_hash)
-    print(f"transaction: {tx_hash}")
+    logger.info(f"transaction: {tx_hash}")
 
     seller = tx.get('to')
     buyer = tx.get('from')
@@ -38,11 +44,11 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
 
     tx_fn, tx_input = decode_contract_transaction(tx_hash)
     function_name = tx_fn.fn_name
-    print(f"function: {function_name}")
-    print(f"input: {tx_input}")
+    logger.debug(f"function: {function_name}")
+    logger.debug(f"input: {tx_input}")
 
     if function_name == "enterBidForPhunk":
-        print("ignore bid tweets for now...")
+        logger.debug("ignore bid tweets for now...")
         return
     elif function_name == "acceptBidForPhunk":
         receipt = get_transaction_receipt(tx_hash)
@@ -51,7 +57,7 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
                                     event_name="PhunkBought")
         buyer = events[0].get('args').get('toAddress')
     else:
-        print("not sure what to do with function: {function_name}")
+        logger.debug("not sure what to do with function: {function_name}")
         return
 
     buyer_ens = get_ens_domain_for_address(buyer)
@@ -78,7 +84,7 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
         }
         save_sale(sale)
     except Exception as e:
-        print(f"issues storing sales: {e}")
+        logger.error(f"issues storing sales: {e}")
 
     phunk_holdings = get_nft_holdings(wallet_address=buyer,
                                       contract_address=settings.PHUNK_CONTRACT_ADDRESS,
@@ -106,11 +112,11 @@ def handle_transaction(tx_hash, tweet_id=None, phunk_id=None, etherscan_link=Non
     try:
         tweet_text += f"\n\n#{phunk_id} rarity rank: {get_phunk_rarity(phunk_id)} / 10k"
     except Exception as e:
-        print(f"problems fetching ranking for phunk id {phunk_id}: {e}")
+        logger.warning(f"problems fetching ranking for phunk id {phunk_id}: {e}")
         tweet_text += "\n"
 
     tweet_text += f"\nhttps://notlarvalabs.com/market/view/phunk/{phunk_id}"
-    print(f"Reply:\n{tweet_text}\n")
+    logger.info(f"Reply:\n{tweet_text}\n")
     reply(tweet_id=tweet_id, reply_text=tweet_text)
 
     try:
@@ -131,10 +137,10 @@ https://notlarvalabs.com/market/view/phunk/{phunk_id}
 
 {etherscan_link}
 """
-            print("\nTweet OS SCAM:")
-            print(os_tweet)
+            logger.warning("\nTweet OS SCAM:")
+            logger.warning(os_tweet)
     except Exception as e:
-        print(f"problems handling opensea hack: {e}")
+        logger.error(f"problems handling opensea hack: {e}")
 
 
 def handle_tweet(tweet_id, data=None, user=None):
@@ -172,13 +178,13 @@ def handle_tweet(tweet_id, data=None, user=None):
 class PhunkBotListener(tweepy.Stream):
 
     def on_status(self, status: Status):
-        print(f"New streamed tweet: {status.id}")
+        logger.info(f"New streamed tweet: {status.id}")
 
         json_status = status._json
         handle_tweet(status.id, data=json_status, user=status.user)
 
     def on_error(self, status_code):
-        print(f"Error: {status_code}")
+        logger.error(f"Error: {status_code}")
         if status_code == 420:
             # returning False in on_data disconnects the stream
             return False
@@ -188,10 +194,10 @@ def start_stream():
     while True:
         try:
             stream = create_stream(stream_cls=PhunkBotListener)
-            print("Streaming...")
+            logger.info("Streaming...")
             stream.filter(follow=[settings.BOT_TWITTER_ID])
         except Exception as e:
-            print(f"found error streaming: {e}")
+            logger.error(f"found error streaming: {e}")
             continue
 
 

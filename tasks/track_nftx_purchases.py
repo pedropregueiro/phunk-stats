@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import time
 
 from web3 import Web3
@@ -9,9 +10,13 @@ from utils.coinbase import get_latest_eth_price
 from utils.phunks import get_phunk_image_url
 from utils.twitter import tweet
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
 
 def handle_event(event):
-    print(f"event: {event}")
+    logger.info(f"event: {event}")
     args = event.get('args')
     from_ = args.get('from')
     to_ = args.get('to')
@@ -20,7 +25,7 @@ def handle_event(event):
     transaction_hash = event.get('transactionHash').hex()
 
     if from_.lower() == settings.PHUNK_TOKEN_ADDRESS.lower():
-        print(f"## Tweeting NFTX purchase {transaction_hash}...")
+        logger.info(f"## Tweeting NFTX purchase {transaction_hash}...")
         etherscan_url = f"https://etherscan.io/tx/{transaction_hash}"
         transaction = get_transaction(transaction_hash)
         value = transaction.get('value')
@@ -29,7 +34,7 @@ def handle_event(event):
         tx_fn, tx_input = decode_contract_transaction(transaction_hash)
         function_name = tx_fn.fn_name
         if function_name != 'buyAndRedeem':
-            print(f"unexpected nftx vault action: {function_name}")
+            logger.warning(f"unexpected nftx vault action: {function_name}")
             return
 
         amount = tx_input.get('amount', 1)
@@ -40,7 +45,7 @@ def handle_event(event):
         if not price_eth:
             # TODO: sort our NFTX vault price math
             # price_eth = get_nftx_vault_price()
-            print("ignoring transaction due to lack of NFTX floor price")
+            logger.debug("ignoring transaction due to lack of NFTX floor price")
             return
 
         eth_to_usd = get_latest_eth_price()
@@ -56,8 +61,7 @@ Phunk #{str(token_id).zfill(4)} was flipped for Ξ{price_eth:.2f} (${price_usd:.
 #CryptoPhunks #Phunks #NFTs https://notlarvalabs.com/
 """
 
-        print(tweet_text)
-        print("\n\n")
+        logger.info(tweet_text)
         tweet(tweet_text, image_urls=[image_url])
 
 
@@ -81,13 +85,13 @@ def main():
 
 
 if __name__:
-    print("Listening to Transfer events...")
+    logger.info("Listening to Transfer events...")
     exception_count = 0
     while True:
         try:
             main()
         except Exception as e:
-            print(f"problems with handling event: {e}")
+            logger.error(f"problems with handling event: {e}")
             exception_count += 1
             time.sleep(60)
             if exception_count > 5:

@@ -1,11 +1,16 @@
 # UTC times
 import argparse
+import logging
 import time
 
 import schedule
 
 from controllers.sniper import fetch_snipable_phunks
 from controllers.stats import fetch_phunks_stats, get_aggregated_stats
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def set_schedules(run_sniper=False, run_stats=False, run_aggregated=False):
@@ -75,7 +80,7 @@ if __name__ == '__main__':
 
     set_schedules(run_sniper=should_run_sniper, run_stats=should_run_stats, run_aggregated=should_run_aggregated_stats)
 
-    print("Scheduling all tasks...")
+    logger.info("Scheduling all tasks...")
     current_task = None
     while True:
         try:
@@ -84,7 +89,7 @@ if __name__ == '__main__':
                 break
             next_task = min(schedule.jobs)
             if next_task != current_task:
-                print(
+                logger.debug(
                     f"Next task scheduled at {next_task.next_run} | "
                     f"task: {next_task.job_func.func.__name__} | "
                     f"args: {next_task.job_func.args} | "
@@ -92,5 +97,5 @@ if __name__ == '__main__':
                 current_task = next_task
             time.sleep(60)
         except Exception as e:
-            print(f"problem with schedule: {e}")
+            logger.error(f"problem with schedule: {e}")
             continue
