@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import time
 import traceback
 
@@ -11,6 +12,10 @@ from utils.coinbase import get_latest_eth_price
 from utils.nll_marketplace import get_tokens_for_sale
 from utils.phunks import get_phunk_image_url, get_phunk_rarity
 from utils.twitter import tweet
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def handle_bid(event):
@@ -27,28 +32,28 @@ def handle_bid(event):
     bid_eth_amount = Web3.fromWei(int(args.get('value')), 'ether')
 
     if bid_eth_amount == 0:
-        print("ignoring 0 ETH bid")
+        logger.warning("ignoring 0 ETH bid")
         return
 
     try:
         floor_token = get_tokens_for_sale(result_size=1)[0]
         floor_price = floor_token.get('floor')
         if float(bid_eth_amount) < float(floor_price) * 0.8:
-            print(f"too low bid, assume it's spam. floor: {floor_price:.2f} | bid: {bid_eth_amount:.2f}")
+            logger.info(f"too low bid, assume it's spam. floor: {floor_price:.2f} | bid: {bid_eth_amount:.2f}")
             return
     except Exception as e:
-        print(f"problem detecting spam bid: {e}")
+        logger.error(f"problem detecting spam bid: {e}")
 
     transaction_hash = event.get('transactionHash').hex()
 
-    print(f"## Tweeting new PHUNK bid {transaction_hash}...")
+    logger.info(f"## Tweeting new PHUNK bid {transaction_hash}...")
     etherscan_url = f"https://etherscan.io/tx/{transaction_hash}"
     nll_url = f"https://www.notlarvalabs.com/cryptophunks/details/{int(phunk_id)}"
 
     tx_fn, tx_input = decode_contract_transaction(transaction_hash)
     function_name = tx_fn.fn_name
-    print(f"function: {function_name}")
-    print(f"input: {tx_input}")
+    logger.debug(f"function: {function_name}")
+    logger.debug(f"input: {tx_input}")
 
     eth_to_usd = get_latest_eth_price()
     price_usd = float(bid_eth_amount) * eth_to_usd
@@ -62,8 +67,7 @@ def handle_bid(event):
 {nll_url}
 #CryptoPhunks #Phunks #NFTs
     """
-    print(tweet_text)
-    print("\n\n")
+    logger.info(tweet_text)
 
     # TODO: add 'anti-spam' logic here
     tweet(tweet_text, image_urls=[image_url])
@@ -75,12 +79,12 @@ def handle_for_sale(event):
 
     for_sale_eth_amount = Web3.fromWei(int(args.get('minValue')), 'ether')
     if for_sale_eth_amount == 0:
-        print("ignoring 0 ETH for sale listing")
+        logger.warning("ignoring 0 ETH for sale listing")
         return
 
     transaction_hash = event.get('transactionHash').hex()
 
-    print(f"## Tweeting new PHUNK sale listing {transaction_hash}...")
+    logger.info(f"## Tweeting new PHUNK sale listing {transaction_hash}...")
     etherscan_url = f"https://etherscan.io/tx/{transaction_hash}"
     nll_url = f"https://www.notlarvalabs.com/cryptophunks/details/{int(phunk_id)}"
 
@@ -102,21 +106,20 @@ Rarity: {get_phunk_rarity(phunk_id)} / 10k
 {nll_url}
 #CryptoPhunks #Phunks #NFTs
 """
-    print(tweet_text)
-    print("\n\n")
+    logger.info(tweet_text)
 
     tweet(tweet_text, image_urls=[image_url])
 
 
 def handle_event(event):
-    print(f"event: {event}")
+    logger.info(f"event: {event}")
     event_name = event.get('event')
     if event_name == "PhunkOffered":
         handle_for_sale(event)
     elif event_name == "PhunkBidEntered":
         handle_bid(event)
     else:
-        print(f"ignoring unexpected event: {event_name}")
+        logger.warning(f"ignoring unexpected event: {event_name}")
 
 
 async def log_loop(event_filter, poll_interval):
@@ -125,7 +128,7 @@ async def log_loop(event_filter, poll_interval):
             try:
                 handle_event(event)
             except Exception as e:
-                print(f"problems handling event: {event}")
+                logger.error(f"problems handling event: {event}")
                 traceback.print_exc()
 
         await asyncio.sleep(poll_interval)
@@ -146,13 +149,13 @@ def main():
 
 
 if __name__:
-    print("Listening to Marketplace events...")
+    logger.info("Listening to Marketplace events...")
     exception_count = 0
     while True:
         try:
             main()
         except Exception as e:
-            print(f"problems with handling event: {e}")
+            logger.error(f"problems with handling event: {e}")
             exception_count += 1
             time.sleep(60)
             if exception_count > 5:
